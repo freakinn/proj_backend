@@ -1,7 +1,6 @@
 
 const Attendance = require("../models/Attendance");
 const Student = require("../models/Student");
-const fs = require("fs");
 const Papa = require("papaparse");
 
 function getAcademicYear(semester) {
@@ -28,17 +27,14 @@ exports.uploadStudents = async (req, res) => {
   }
 
   try {
-    // Read the CSV file
-    const csvFile = fs.readFileSync(file.path, "utf8");
+    // Read the uploaded CSV from memory. This works on Vercel's read-only filesystem.
+    const csvFile = file.buffer.toString("utf8");
 
     // Parse the CSV file
     const parsedData = Papa.parse(csvFile, {
       header: true, // Treat the first row as headers
       skipEmptyLines: true,
     });
-
-    // Remove the file after parsing
-    fs.unlinkSync(file.path);
 
     const students = parsedData.data;
 
