@@ -3,7 +3,9 @@ const connectDB = require('./utils/db');
 const cors = require('cors')
 
 const app = express();
-connectDB();
+connectDB().catch((error) => {
+  console.error("Initial MongoDB connection failed:", error.message);
+});
 const PORT = process.env.PORT || 5173;
 
 app.use((req, res, next) => {
