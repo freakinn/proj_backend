@@ -8,6 +8,11 @@ connectDB().catch((error) => {
 });
 const PORT = process.env.PORT || 5173;
 
+app.use(cors({
+  origin: 'https://proj-frontend-neon.vercel.app',
+  credentials: true
+}));
+
 app.use((req, res, next) => {
   const allowedOrigins = [
     "http://localhost:3000",
@@ -29,9 +34,8 @@ app.use((req, res, next) => {
 
   next();
 });
-app.use(express.json());
-app.use(cors());
 
+app.use(express.json());
 app.get("/", (req, res) => {
   res.send("Backend is running");
 });
