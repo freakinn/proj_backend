@@ -5,17 +5,20 @@ const cors = require('cors')
 const app = express();
 connectDB();
 const PORT = process.env.PORT || 5173;
-
-app.use(express.json());
-app.use(cors({
-  origin: [
-    "http://localhost:3000",
-    "https://proj-frontend-neon.vercel.app"
-  ],
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || origin === "http://localhost:3000" || /\.vercel\.app$/.test(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error("Not allowed by CORS"));
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
-}));
-app.options("*", cors());
+};
+
+app.use(express.json());
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 app.get("/", (req, res) => {
   res.send("Backend is running");
