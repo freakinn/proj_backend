@@ -4,10 +4,14 @@ const cors = require('cors')
 
 const app = express();
 connectDB();
-const PORT = 5173
+const PORT = process.env.PORT || 5173;
 
 app.use(express.json());
 app.use(cors({}));
+
+app.get("/", (req, res) => {
+  res.send("Backend is running");
+});
 
 // Routes
 const studentRoutes = require('./routes/studentRoutes');
@@ -42,6 +46,10 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-})
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
+
+module.exports = app;
